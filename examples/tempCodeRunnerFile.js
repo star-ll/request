@@ -1,0 +1,1 @@
+res.setHeader("content-type", "application/html")
