@@ -1,19 +1,76 @@
-import { InitConfig, SendOptions } from "./types/fetcher.d";
+import { Interceptor } from "./types/interceptor.d";
+import { InitConfig, ResponseResult, SendOptions } from "./types/index.js";
+import { Request, Response } from "./interceptor/index.js";
+import { dispatch } from "./dispatch/index.js";
+import { jsonSafeParse } from "./utils/typeof.js";
+import { mergeUrl } from "./utils/url";
 
 class Fetcher {
-	private readonly config: Partial<InitConfig> = {
-		methods: "get",
-	};
+	private readonly config: Partial<InitConfig> | {};
 
-	constructor(config: InitConfig) {}
+	interceptor: Interceptor;
 
-	send(
-		url: string,
-		options: SendOptions = {
-			methods: "get",
+	constructor(config?: InitConfig) {
+		this.interceptor = {
+			response: new Response(),
+			request: new Request(),
+		};
+
+		this.config = config || {};
+	}
+
+	private mergeConfig(
+		config: InitConfig,
+		sendOptions: SendOptions
+	): SendOptions {
+		const url = mergeUrl(config.baseURL, sendOptions.url);
+
+		return {
+			...sendOptions,
+			url,
+		};
+	}
+
+	send(options: SendOptions) {
+		options = this.mergeConfig(this.config, options);
+
+		const interceptQueue = [dispatch, undefined];
+		interceptQueue.unshift(...this.interceptor.request.queue);
+		interceptQueue.push(...this.interceptor.response.queue);
+
+		const head = Promise.resolve(options);
+		let res: any = head;
+
+		while (interceptQueue.length) {
+			res = res.then(interceptQueue.shift(), interceptQueue.shift());
 		}
-	) {
-		return fetch(url, options as RequestInit);
+
+		return res.then(
+			async (res: ResponseResult) => {
+				let data = null;
+
+				if (res.headers.get("content-type") === "application/json") {
+					data = await res.json();
+					data = jsonSafeParse(data);
+				} else {
+					data = await res.text();
+				}
+
+				const result = {
+					data,
+					headers: res.headers,
+					ok: res.ok,
+					redirected: res.redirected,
+					status: res.status,
+					statusText: res.statusText,
+					url: res.url,
+					source: res,
+				};
+
+				return result;
+			},
+			(err: Error) => Promise.reject(err)
+		);
 	}
 }
 

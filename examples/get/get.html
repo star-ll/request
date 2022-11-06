@@ -14,7 +14,14 @@
 <script type="module">
     import Fetcher from "../../dist/index.js"
 
-    const fetcher = new Fetcher('')
+    const fetcher = new Fetcher().send({
+        method: "get",
+        url: '/api/json'
+    }).then((res)=> {
+        console.log(res);
+    }).catch(err=> {
+        console.error(err);
+    })
     console.log(Fetcher);
 </script>
 

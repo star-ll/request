@@ -9,7 +9,16 @@ http.createServer((req, res) => {
 
 	if (req.url.indexOf("/api/") > -1) {
 		// 测试用的api
-		res.end("true");
+		
+		if (/json$/.test(req.url)) {
+			res.setHeader("content-type", "application/json");
+			res.end(JSON.stringify({
+				data: { name: "张三", age: 18 },
+				msg: "成功"
+			}));
+		} else {
+			res.end("true")
+		}
 	} else if (req.url === "/") {
 		res.end("true");
 	} else {
@@ -31,6 +40,8 @@ http.createServer((req, res) => {
 			res.end(content);
 		} catch (err) {
 			console.error(err);
+			res.statusCode = 404;
+			res.end("资源不存在")
 		}
 	}
 }).listen(3000, () => {

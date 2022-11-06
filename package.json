@@ -5,12 +5,16 @@
 	"main": "./dist/index.js",
 	"scripts": {
 		"dev": "tsc --watch",
-		"build": "tsc"
+		"build": "tsc",
+		"examples": "tsc && node ./examples/server.js"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
 		"typescript": "^4.8.4"
+	},
+	"dependencies": {
+		"@types/node": "^18.11.9"
 	}
 }
