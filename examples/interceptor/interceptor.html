@@ -9,14 +9,12 @@
 </head>
 
 <body>
-    Fetcher interceptor
+    request interceptor
 </body>
 <script type="module">
-    import fetcher from "../../dist/index.js"
+    import http from "../../dist/index.js"
 
-console.log(fetcher);
-
-    const request = fetcher.create({
+    const request = http.create({
         baseURL: 'http://localhost:3000/'
     })
 
@@ -44,14 +42,8 @@ console.log(fetcher);
         console.error(err);
     })
 
-    // fetcher({
-    //     method: "get",
-    //     url: '/api/json'
-    // }).then((res)=> {
-    //     console.log('fetcher',res);
-    // }).catch(err=> {
-    //     console.error(err);
-    // })
+
+
 </script>
 
 </html>

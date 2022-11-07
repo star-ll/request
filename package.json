@@ -1,16 +1,20 @@
 {
-	"name": "fetcher",
+	"name": "request",
 	"version": "0.0.1",
-	"description": "",
+	"description": "request是基于Promise的网络请求库，包含请求配置、拦截器等功能。",
 	"main": "./dist/index.js",
 	"scripts": {
 		"dev": "tsc --watch",
 		"build": "tsc",
 		"examples": "tsc && node ./examples/server.js"
 	},
-	"keywords": [],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/const-love-365-10000/request"
+	},
+	"keywords": ["request","Http"],
 	"author": "",
-	"license": "ISC",
+	"license": "MIT",
 	"devDependencies": {
 		"typescript": "^4.8.4"
 	},

@@ -1,25 +1,41 @@
-# Fetcher
+# Request
 
 ## Introduce
 
-基于fetcher实现的网络请求库，包含请求配置、拦截器等功能。
-
-## Examples
-
-```
-npm run examples
-```
+基于Promise的网络请求库，包含请求配置、拦截器等功能。
 
 ## Start
-```javascript
-import Fetcher from "fetcher"
 
-const fetcher = new Fetcher().send({
+```javascript
+import request from "request"
+
+request({
     method: "get",
     url: '/api/json'
 }).then((res)=> {
-    // success
+    console.log(res);
 }).catch(err=> {
-    // error
+    console.error(err);
 })
 ```
+
+## Development
+
+develop
+
+```bash
+npm run dev
+```
+
+debugger
+
+```bash
+npm run examples
+```
+
+build
+
+```bash
+npm run build
+```
+

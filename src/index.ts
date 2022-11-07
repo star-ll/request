@@ -5,21 +5,22 @@ import {
 	SendOptions,
 	SendReturnType,
 } from "./types/index.d";
-import { Request, Response } from "./interceptor/index.js";
+import {
+	Request as RequestInterceptor,
+	Response as ResponseInterceptor,
+} from "./interceptor/index.js";
 import { dispatch } from "./dispatch/index.js";
-import { isDefine, jsonSafeParse } from "./utils/typeof.js";
 import { mergeUrl } from "./utils/url.js";
-import { formatHeaders } from "./utils/headers.js";
 
-class Fetcher {
+class Request {
 	private readonly config: Partial<InitConfig> | {};
 
 	interceptor: Interceptor;
 
 	constructor(config?: InitConfig) {
 		this.interceptor = {
-			response: new Response(),
-			request: new Request(),
+			response: new ResponseInterceptor(),
+			request: new RequestInterceptor(),
 		};
 
 		this.config = config || {};
@@ -48,24 +49,27 @@ class Fetcher {
 		let result: any = head;
 
 		while (interceptQueue.length) {
-			result = result.then(interceptQueue.shift(), interceptQueue.shift());
+			result = result.then(
+				interceptQueue.shift(),
+				interceptQueue.shift()
+			);
 		}
 
 		return result;
 	}
 
 	create(config?: InitConfig) {
-		const _fetcher = new Fetcher(config);
-		// 构建fetcher函数
-		function fetcher(this: any, options: SendOptions) {
+		const _request = new Request(config);
+		// 构建request函数
+		function request(this: any, options: SendOptions) {
 			return this.send(options);
 		}
 
-		const proto = Object.getPrototypeOf(fetcher);
-		Object.setPrototypeOf(proto, _fetcher);
+		const proto = Object.getPrototypeOf(request);
+		Object.setPrototypeOf(proto, _request);
 
-		return fetcher.bind(_fetcher);
+		return request.bind(_request);
 	}
 }
 
-export default new Fetcher().create();
+export default new Request().create();
