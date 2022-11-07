@@ -1,9 +1,15 @@
 import { Interceptor } from "./types/interceptor.d";
-import { InitConfig, ResponseResult, SendOptions } from "./types/index.js";
+import {
+	InitConfig,
+	ResponseResult,
+	SendOptions,
+	SendReturnType,
+} from "./types/index.d";
 import { Request, Response } from "./interceptor/index.js";
 import { dispatch } from "./dispatch/index.js";
 import { jsonSafeParse } from "./utils/typeof.js";
-import { mergeUrl } from "./utils/url";
+import { mergeUrl } from "./utils/url.js";
+import { formatHeaders } from "./utils/headers.js";
 
 class Fetcher {
 	private readonly config: Partial<InitConfig> | {};
@@ -20,10 +26,10 @@ class Fetcher {
 	}
 
 	private mergeConfig(
-		config: InitConfig,
+		config: Partial<InitConfig>,
 		sendOptions: SendOptions
 	): SendOptions {
-		const url = mergeUrl(config.baseURL, sendOptions.url);
+		const url = mergeUrl(config.baseURL || "", sendOptions.url);
 
 		return {
 			...sendOptions,
@@ -31,7 +37,7 @@ class Fetcher {
 		};
 	}
 
-	send(options: SendOptions) {
+	send(options: SendOptions): SendReturnType {
 		options = this.mergeConfig(this.config, options);
 
 		const interceptQueue = [dispatch, undefined];
@@ -58,7 +64,7 @@ class Fetcher {
 
 				const result = {
 					data,
-					headers: res.headers,
+					headers: formatHeaders(res),
 					ok: res.ok,
 					redirected: res.redirected,
 					status: res.status,

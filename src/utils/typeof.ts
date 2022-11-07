@@ -10,9 +10,13 @@ export function isDefine(type: any) {
 	return type !== null && type !== undefined;
 }
 
+export function isFunction(type: any) {
+	return typeof type === "function";
+}
+
 export function jsonSafeParse(data: any, errReplace?: any) {
-    try {
-        return JSON.parse(data)
+	try {
+		return JSON.parse(data);
 	} catch (err) {
 		return isDefine(errReplace) ? errReplace : data;
 	}
