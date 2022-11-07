@@ -12,9 +12,9 @@
     <h1>Fetcher Get</h1>
 </body>
 <script type="module">
-    import Fetcher from "../../dist/index.js"
+    import fetcher from "../../dist/index.js"
 
-    const fetcher = new Fetcher().send({
+    fetcher({
         method: "get",
         url: '/api/json'
     }).then((res)=> {
@@ -22,7 +22,7 @@
     }).catch(err=> {
         console.error(err);
     })
-    console.log(Fetcher);
+    console.log(fetcher);
 </script>
 
 </html>

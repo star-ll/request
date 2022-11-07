@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>interceptor</title>
+</head>
+
+<body>
+    Fetcher interceptor
+</body>
+<script type="module">
+    import fetcher from "../../dist/index.js"
+
+console.log(fetcher);
+
+    const request = fetcher.create({
+        baseURL: 'http://localhost:3000/'
+    })
+
+    request.interceptor.response.use((response)=>{
+        console.log('response',response);
+        return response
+    },(err)=> {
+        console.error(err);
+        return Promise.reject(err)
+    })
+    request.interceptor.request.use((config)=>{
+        console.log('request',config);
+        return config
+    },(err)=> {
+        console.error(err);
+        return Promise.reject(err)
+    })
+
+    request({
+        method: "get",
+        url: '/api/json'
+    }).then((res)=> {
+        console.log('request',res);
+    }).catch(err=> {
+        console.error(err);
+    })
+
+    // fetcher({
+    //     method: "get",
+    //     url: '/api/json'
+    // }).then((res)=> {
+    //     console.log('fetcher',res);
+    // }).catch(err=> {
+    //     console.error(err);
+    // })
+</script>
+
+</html>

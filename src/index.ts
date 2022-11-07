@@ -7,7 +7,7 @@ import {
 } from "./types/index.d";
 import { Request, Response } from "./interceptor/index.js";
 import { dispatch } from "./dispatch/index.js";
-import { jsonSafeParse } from "./utils/typeof.js";
+import { isDefine, jsonSafeParse } from "./utils/typeof.js";
 import { mergeUrl } from "./utils/url.js";
 import { formatHeaders } from "./utils/headers.js";
 
@@ -45,39 +45,27 @@ class Fetcher {
 		interceptQueue.push(...this.interceptor.response.queue);
 
 		const head = Promise.resolve(options);
-		let res: any = head;
+		let result: any = head;
 
 		while (interceptQueue.length) {
-			res = res.then(interceptQueue.shift(), interceptQueue.shift());
+			result = result.then(interceptQueue.shift(), interceptQueue.shift());
 		}
 
-		return res.then(
-			async (res: ResponseResult) => {
-				let data = null;
+		return result;
+	}
 
-				if (res.headers.get("content-type") === "application/json") {
-					data = await res.json();
-					data = jsonSafeParse(data);
-				} else {
-					data = await res.text();
-				}
+	create(config?: InitConfig) {
+		const _fetcher = new Fetcher(config);
+		// 构建fetcher函数
+		function fetcher(this: any, options: SendOptions) {
+			return this.send(options);
+		}
 
-				const result = {
-					data,
-					headers: formatHeaders(res),
-					ok: res.ok,
-					redirected: res.redirected,
-					status: res.status,
-					statusText: res.statusText,
-					url: res.url,
-					source: res,
-				};
+		const proto = Object.getPrototypeOf(fetcher);
+		Object.setPrototypeOf(proto, _fetcher);
 
-				return result;
-			},
-			(err: Error) => Promise.reject(err)
-		);
+		return fetcher.bind(_fetcher);
 	}
 }
 
-export default Fetcher;
+export default new Fetcher().create();

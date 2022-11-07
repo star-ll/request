@@ -11,6 +11,15 @@ npm run examples
 ```
 
 ## Start
-```
-npm run dev
+```javascript
+import Fetcher from "fetcher"
+
+const fetcher = new Fetcher().send({
+    method: "get",
+    url: '/api/json'
+}).then((res)=> {
+    // success
+}).catch(err=> {
+    // error
+})
 ```
