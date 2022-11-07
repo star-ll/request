@@ -1,6 +1,6 @@
 {
-	"name": "request",
-	"version": "0.0.1",
+	"name": "@yujin321/request",
+	"version": "0.4.0",
 	"description": "request是基于Promise的网络请求库，包含请求配置、拦截器等功能。",
 	"main": "./dist/index.js",
 	"scripts": {
@@ -12,8 +12,17 @@
 		"type": "git",
 		"url": "https://github.com/const-love-365-10000/request"
 	},
-	"keywords": ["request","Http"],
-	"author": "",
+	"bugs": {
+		"url": "https://github.com/const-love-365-10000/request/issues"
+	},
+	"keywords": [
+		"request",
+		"http",
+		"promise",
+		"fetch",
+		"curl"
+	],
+	"author": "yujin321",
 	"license": "MIT",
 	"devDependencies": {
 		"typescript": "^4.8.4"
